@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			Zombie Rampage
+		</title>
+		<style>
+			.canvas-border {
+				background-color: #DDDDDD;
+				width: 200px;
+				border: 2px solid black;
+				margin: 5px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+
+			.panel {
+				background-color: #EEEEEE;
+				width: 200px;
+				height: 200px;
+				border: 2px solid black;
+				float: left;
+				margin: 5px;
+			}
+
+			.panel-title {
+				font-weight: bold;
+				text-align: center;
+			}
+		</style>
+		<script id="vertex-shader-horizon" type="x-shader/x-vertex">
+			attribute vec4 vPosition;
+			attribute vec4 vColor;
+			varying vec4 fColor;
+
+			void
+			main()
+			{
+				gl_PointSize = 1.0;
+				gl_Position = vPosition;
+				fColor = vColor;
+			}
+		</script>
+		<script id="fragment-shader-horizon" type="x-shader/x-fragment">
+			precision mediump float;
+			varying vec4 fColor;
+
+			void
+			main()
+			{
+				gl_FragColor = fColor;
+			}
+		</script>
+
+		<script id="vertex-shader-billboard" type="x-shader/x-vertex">
+			attribute vec4 vPosition;
+			attribute vec2 vTextureCoord;
+			varying vec2 fTextureCoord;
+			uniform mat4 projection;
+
+			void
+			main()
+			{
+				gl_PointSize = 1.0;
+				gl_Position = projection * vPosition;
+				fTextureCoord = vTextureCoord;
+			}
+		</script>
+		<script id="fragment-shader-billboard" type="x-shader/x-fragment">
+			precision mediump float;
+			varying vec2 fTextureCoord;
+			uniform sampler2D texture;
+
+			void
+			main()
+			{
+				vec4 texel = texture2D(texture, fTextureCoord);
+				if(texel.a<0.5)
+					discard;
+				gl_FragColor = texel;
+			}
+		</script>
+
+		<script id="vertex-shader-gun" type="x-shader/x-vertex">
+			attribute vec4 vPosition;
+			attribute vec2 vTextureCoord;
+			varying vec2 fTextureCoord;
+
+			void
+			main()
+			{
+				gl_PointSize = 1.0;
+				gl_Position = vPosition;
+				fTextureCoord = vTextureCoord;
+			}
+		</script>
+		<script id="fragment-shader-gun" type="x-shader/x-fragment">
+			precision mediump float;
+			varying vec2 fTextureCoord;
+			uniform sampler2D texture;
+
+			void
+			main()
+			{
+				vec4 texel = texture2D(texture, fTextureCoord);
+				if(texel.a<0.5)
+					discard;
+				gl_FragColor = texel;
+			}
+		</script>
+		<script type="text/javascript" src="webgl-utils.js"></script>
+		<script type="text/javascript" src="initShaders.js"></script>
+		<script type="text/javascript" src="MV.js"></script>
+		<script type="text/javascript" src="code.js"></script>
+	</head>
+	<body>
+		<fieldset class="canvas-border">
+			<legend class="panel-title">Score:&nbsp;<span id="score">0</span> - Bullets:&nbsp;<span id="bullets">20</span></legend>
+			<canvas id="gl-canvas" width="1024" height="512" style="border: 2px solid black;">WebGL is not supported by your browser :(</canvas>
+		</fieldset>
+	</body>
+</html>
